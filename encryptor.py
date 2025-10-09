@@ -1,76 +1,86 @@
-# Import the necessary libraries
-from cryptoraphy.fernet import Fernet
+# import libraries
 import os
-
-
+from cryptography.fernet import Fernet
 
 class RansomWare:
 
-    
-    # File exstensions to seek out and Encrypt
-    file_exts = [
-        '.txt', '.log', '.csv', '.doc', '.docx' '.xls', '.pdf', '.xlsx', '.ppt'
+    # The file types this toy will encrypt
+    file_exts = ['.txt', '.docx', '.pdf']  # just examples
+
+    def __init__(self, test_folder="ransomware_test_env"):
         
-
-    ]
-
-
-    def __init__(self):
-        # Key that will be used for Fernet object and encrypt/decrypt method
-       
-             
-        # Encrypt/Decrypter
+        # This sets up our safe test folder and important variables.
         
-        # RSA public key used for encrypting/decrypting fernet object eg, Symmetric key
-        
+        self.localRoot = os.path.join(os.getcwd(), test_folder)
+        os.makedirs(self.localRoot, exist_ok=True)  # make folder if not exists
 
-        ''' Root directorys to start Encryption/Decryption from
-            CAUTION: Do NOT use self.sysRoot on your own PC as you could end up messing up your system etc...
-            CAUTION: Play it safe, create a mini root directory to see how this software works it is no different
-            CAUTION: eg, use 'localRoot' and create Some folder directory and files in them folders etc.
-        '''
-        # Use sysroot to create absolute path for files, etc. And for encrypting whole system
-        
-        # Use localroot to test encryption softawre and for absolute path for files and encryption of "test system"
-         # Debugging/Testing
+        # Where we'll keep the key file
+        self.key_path = os.path.join(self.localRoot, "fernet_key.txt")
 
-        # Get public IP of person, for more analysis etc. (Check if you have hit gov, military ip space LOL)
-        
+        demo_file = os.path.join(self.localRoot, "sample.txt")
+        if not os.path.exists(sample_file):
+        with open(sample_file, "w") as f:
+            f.write("This encryption is for educational purpose")
 
-
-    # Generates [SYMMETRIC KEY] on victim machine which is used to encrypt the victims data
-    def generate_key(self):
-        # Generates a url safe(base64 encoded) key
-        
-        # Creates a Fernet object with encrypt/decrypt methods
-        
-
-    
-    # Write the fernet(symmetric key) to text file
-    def write_key(self):
-        
-
-
-    # Encrypt [SYMMETRIC KEY] that was created on victim machine to Encrypt/Decrypt files with our PUBLIC ASYMMETRIC-
-    # -RSA key that was created on OUR MACHINE. We will later be able to DECRYPT the SYSMETRIC KEY used for-
-    # -Encrypt/Decrypt of files on target machine with our PRIVATE KEY, so that they can then Decrypt files etc.
-    def encrypt_fernet_key(self):
-        with open('fernet_key.txt', 'rb')
-
-
-        with open('fernet_key.txt', 'wb') as f:
-            # Public RSA key
-            
-            # Public encrypter object
-            
-            # Encrypted fernet key
-            
-            # Write encrypted fernet key to file
-            
-        # Write encrypted fernet key to dekstop as well so they can send this file to be unencrypted and get system/files back
-        with open(f'{self.sysRoot}Desktop/EMAIL_ME.txt', 'wb') as fa:
-            
-        # Assign self.key to encrypted fernet key
-        
-        # Remove fernet crypter object
+        # Start with no key or crypter
+        self.key = None
         self.crypter = None
+
+    def generate_key(self):
+        # Make a new secret key and prepare the encrypt/decrypt tool.
+        self.key = Fernet.generate_key()        # make the key
+        self.crypter = Fernet(self.key)         # make the tool with that key
+        print("✅ Key generated successfully!")
+
+    def write_key(self):
+        # Save the secret key safely in our test folder.
+        if not self.key:
+            print("⚠️ You must generate the key first!")
+            return
+        with open(self.key_path, "wb") as key_file:
+            key_file.write(self.key)
+        print(f"🔑 Key saved to: {self.key_path}")
+
+    def load_key(self):
+        # Load the key from the text file (so we can use it again).
+        if not os.path.exists(self.key_path):
+            print("❌ Key file not found! Generate it first.")
+            return
+        with open(self.key_path, "rb") as key_file:
+            self.key = key_file.read()
+        self.crypter = Fernet(self.key)
+        print("✅ Key loaded successfully!")
+
+    def encrypt_file(self, sample.txt):
+        # Encrypt one test file inside the test folder.
+        file_path = os.path.join(self.localRoot, sample.txt)
+        if not os.path.exists(file_path):
+            print("❌ File not found!")
+            return
+
+        with open(file_path, "rb") as f:
+            data = f.read()
+
+        encrypted = self.crypter.encrypt(data)
+
+        with open(file_path, "wb") as f:
+            f.write(encrypted)
+
+        print(f"🔒 {sample.txt} encrypted!")
+
+    def decrypt_file(self, sample.txt):
+        # Decrypt one test file inside the test folder.
+        file_path = os.path.join(self.localRoot, sample.txt)
+        if not os.path.exists(file_path):
+            print("❌ File not found!")
+            return
+
+        with open(file_path, "rb") as f:
+            data = f.read()
+
+        decrypted = self.crypter.decrypt(data)
+
+        with open(file_path, "wb") as f:
+            f.write(decrypted)
+
+        print(f"🔓 {sample.txt} decrypted!")
